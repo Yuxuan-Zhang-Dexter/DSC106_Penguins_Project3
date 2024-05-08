@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as topojson from 'topojson-client';
+	// import {Legend} from "@d3/color-legend";
 
     export let us;
 

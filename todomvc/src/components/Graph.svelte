@@ -81,7 +81,7 @@
 		/* // Ensure SVG fills the container */
         height: 100%;
     }
-    .tooltip {
+    /* .tooltip {
         position: fixed;
         text-align: center;
         width: auto;
@@ -93,5 +93,5 @@
         padding: 5px;
         font-size: 14px;
         color: black;
-    }
+    } */
 </style>

@@ -1,4 +1,4 @@
-County,2020,2021,2022,2023,State,County_State,state_county_fips
+county,2020,2021,2022,2023,state,county_state,id
 Autauga County,58915,59203,59726,60342, Alabama,"Autauga County, Alabama",01001
 Baldwin County,233227,239439,246531,253507, Alabama,"Baldwin County, Alabama",01003
 Barbour County,24969,24533,24700,24585, Alabama,"Barbour County, Alabama",01005

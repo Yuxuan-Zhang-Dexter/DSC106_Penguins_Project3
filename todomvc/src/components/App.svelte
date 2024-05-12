@@ -22,16 +22,14 @@
         }
 
         try {
-            const populationData = await d3.csv('./state_county_population.csv');
-            data = populationResponse.map(d => {
-                d['2020'] = +d['2020'];  // Correctly parse and assign the number
-                return d;
-            });
+            // Correctly use the fetched data
+            const data = await d3.csv('https://raw.githubusercontent.com/Yuxuan-Zhang-Dexter/DSC106_Penguins_Project3/yuxuan/state_county_population.csv');
+            console.log(data)
         } catch (err) {
             console.error('Error loading the population data:', err);
             error = err;
         }
-    });
+    });    
 
 </script>
 

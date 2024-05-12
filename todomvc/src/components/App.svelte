@@ -1,28 +1,38 @@
 <script>
     import { onMount } from 'svelte';
     import Graph from './Graph.svelte';
+    import * as d3 from 'd3';
   
     let us = null;  // This will hold the topoJSON data.
     let error = null;  // To store potential errors during data fetching.
     let selectedYear = 2020;  // Default year or the most recent year with data
+    let data = null // This will hold the county population data
 
     // Fetch the topoJSON data when the component mounts.
-    onMount(() => {
-        fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok.'); // Handle non-OK responses by throwing an error.
+    onMount(async () => {  // Make the function async to use await
+        try {
+            const topoResponse = await fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json');
+            if (!topoResponse.ok) {
+                throw new Error('Network response was not ok.');
             }
-            return response.json(); // Parse the JSON data from the response.
-        })
-        .then(data => {
-            us = data;  // Assign the fetched data to the 'us' variable.
-        })
-        .catch(err => {
-            console.error('Error loading the topoJSON data:', err);  // Log errors to the console.
-            error = err;  // Store the error to display in the UI.
-        });
+            us = await topoResponse.json();
+        } catch (err) {
+            console.error('Error loading the topoJSON data:', err);
+            error = err;
+        }
+
+        try {
+            const populationData = await d3.csv('./state_county_population.csv');
+            data = populationResponse.map(d => {
+                d['2020'] = +d['2020'];  // Correctly parse and assign the number
+                return d;
+            });
+        } catch (err) {
+            console.error('Error loading the population data:', err);
+            error = err;
+        }
     });
+
 </script>
 
 <main>

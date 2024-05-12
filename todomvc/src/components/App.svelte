@@ -4,6 +4,7 @@
   
     let us = null;  // This will hold the topoJSON data.
     let error = null;  // To store potential errors during data fetching.
+    let selectedYear = 2020;  // Default year or the most recent year with data
 
     // Fetch the topoJSON data when the component mounts.
     onMount(() => {
@@ -29,6 +30,8 @@
         <p class="error">Error loading data. Please try again later.</p>  
         <!-- // Display an error message if there's an error. -->
     {:else if us}
+        <input type="range" min="2000" max="2020" bind:value={selectedYear} />
+        <span>{selectedYear}</span>
         <Graph {us}/>  
         <!-- // Render the Graph component if data is loaded successfully. -->
     {:else}
@@ -40,6 +43,7 @@
 <style>
     main {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 100vh;  /* // Make the main element cover the entire viewport height. */
@@ -51,5 +55,11 @@
     }
     .error {
         color: red;  /* // Highlight errors in red. */
+    }
+    button {
+        margin-left: 10px;
+        padding: 5px 10px;
+        font-size: 14px;
+        cursor: pointer;
     }
 </style>

@@ -23,7 +23,8 @@
 
         try {
             // Correctly use the fetched data
-            const data = await d3.csv('https://raw.githubusercontent.com/Yuxuan-Zhang-Dexter/DSC106_Penguins_Project3/yuxuan/state_county_population.csv');
+            const populationData = await d3.csv('https://raw.githubusercontent.com/Yuxuan-Zhang-Dexter/DSC106_Penguins_Project3/yuxuan/state_county_population.csv');
+            data = populationData
             console.log(data)
         } catch (err) {
             console.error('Error loading the population data:', err);
@@ -37,10 +38,10 @@
     {#if error}
         <p class="error">Error loading data. Please try again later.</p>  
         <!-- // Display an error message if there's an error. -->
-    {:else if us}
+    {:else if us && data}
         <input type="range" min="2000" max="2020" bind:value={selectedYear} />
         <span>{selectedYear}</span>
-        <Graph {us}/>  
+        <Graph {us}{data}/>  
         <!-- // Render the Graph component if data is loaded successfully. -->
     {:else}
         <p class="loading">Loading...</p>  

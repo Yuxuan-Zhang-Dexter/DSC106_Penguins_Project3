@@ -39,7 +39,7 @@
         <p class="error">Error loading data. Please try again later.</p>  
         <!-- // Display an error message if there's an error. -->
     {:else if us && data}
-        <input type="range" min="2000" max="2020" bind:value={selectedYear} />
+        <input type="range" min="2020" max="2023" bind:value={selectedYear} />
         <span>{selectedYear}</span>
         <Graph {us}{data}/>  
         <!-- // Render the Graph component if data is loaded successfully. -->

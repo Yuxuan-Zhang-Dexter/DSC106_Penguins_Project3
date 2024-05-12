@@ -143,7 +143,7 @@
 
         svg.selectAll("*").remove(); // Clear previous SVG contents
 
-        const color = d3.scaleQuantize([1, 10], d3.schemeBlues[9]);
+        const color = d3.scaleQuantize([0, 15], d3.schemeBlues[9]);
         const path = d3.geoPath();
         const valuemap = new Map(data.map(d => [d.id, d['2020']]));
 

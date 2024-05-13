@@ -6,8 +6,8 @@
     export let us;
     export let data; // Ensure data is ready for future use
     export let selectedYear;
+    export let selectedCountyId;
 
-    console.log(selectedYear);
 
     let svgElement;
     let tooltipElement; // Change this to match Svelte binding
@@ -138,13 +138,28 @@
 
     // add createChart function
 
+    let zoomedToCounty = false;
+    let currentCountyId = null;
+
     function createChart() {
         if (!us || !svgElement || !tooltipElement) return; // Ensure everything is available
 
-        const svg = d3.select(svgElement);
-        const tooltip = d3.select(tooltipElement);
+        // const svg = d3.create("svg")
+        //     .attr("width", "100%")
+        //     .attr("height", "100%")
+        //     .attr("viewBox", [0, 0, 975, 610])
+        //     .attr("style", "max-width: 100%; height: auto; display: block;");
+        
+        // d3.select(svgElement).node().appendChild(svg.node());
+
+        const svg = d3.select(svgElement)
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("viewBox", [0, 0, 975, 610])
+            .attr("style", "max-width: 100%; height: auto; display: block;");
 
         svg.selectAll("*").remove(); // Clear previous SVG contents
+        const tooltip = d3.select(tooltipElement);
 
         const color = d3.scaleQuantize([1, 13], d3.schemeBlues[6]);
         const path = d3.geoPath();
@@ -160,6 +175,30 @@
             .scaleExtent([1, 8])
             .on('zoom', (event) => svg.selectAll('path').attr('transform', event.transform));
         svg.call(zoom);
+
+        // Variables to track the current zoom state and the currently zoomed county
+        console.log(selectedCountyId)
+         // Handle zoom in and zoom out
+        if (selectedCountyId) {
+            const county = counties.features.find(d => d.id === selectedCountyId);
+            if (county) {
+                const [[x0, y0], [x1, y1]] = path.bounds(county);
+                svg.transition()
+                    .duration(750)
+                    .call(zoom.transform, d3.zoomIdentity
+                        .translate(975 / 2, 610 / 2)
+                        .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / 975, (y1 - y0) / 610)))
+                        .translate(-(x0 + x1) / 2, -(y0 + y1) / 2));
+                zoomedToCounty = true;
+                currentCountyId = selectedCountyId;
+            }
+        } else if (zoomedToCounty) {
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity);
+            zoomedToCounty = false;
+            currentCountyId = null;
+        }
 
         // Draw legend
         svg.append("g")
@@ -186,6 +225,27 @@
                 .on('mouseout', () => {
                     tooltip.style("visibility", "hidden");
                 })
+               .on('click', (event, d) => {
+                    if (zoomedToCounty && currentCountyId === d.id) {
+                        // Zoom out to normal view
+                        svg.transition()
+                            .duration(750)
+                            .call(zoom.transform, d3.zoomIdentity);
+                        zoomedToCounty = false;
+                        currentCountyId = null;
+                    } else {
+                        // Zoom in to the clicked county
+                        const [[x0, y0], [x1, y1]] = path.bounds(d);
+                        svg.transition()
+                            .duration(750)
+                            .call(zoom.transform, d3.zoomIdentity
+                                .translate(975 / 2, 610 / 2)
+                                .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / 975, (y1 - y0) / 610)))
+                                .translate(-(x0 + x1) / 2, -(y0 + y1) / 2));
+                        zoomedToCounty = true;
+                        currentCountyId = d.id;
+                    }
+                })
             .append("title")
                 .text(d => `${d.properties.name}, ${statemap.get(d.id.slice(0, 2)).properties.name}\n${valuemap.get(d.id)}`);
 
@@ -199,15 +259,13 @@
     }
 
     onMount(createChart);
-    $: us, data, selectedYear, createChart(); // Reactive update if 'us' or 'data' changes
+    $: us, data, selectedYear, selectedCountyId, createChart(); // Reactive update if 'us' or 'data' changes
+    
 </script>
 
 <svg bind:this={svgElement}></svg>
 <div bind:this={tooltipElement} class="tooltip" style="position: absolute; visibility: hidden; pointer-events: none; background-color: white; padding: 5px; border: 1px solid black;"></div>
 
-
-
-<div>Hello from Graph.svelte!</div>
 
 <style>
     /* Styling for any additional div elements inside the component */
@@ -225,6 +283,7 @@
         width: 100%;
         height: 100%;  /* Set height to 100% to fill the container */
         display: block;  /* Remove any extra space below the SVG */
+
     }
 
     /* Styling for the tooltip */

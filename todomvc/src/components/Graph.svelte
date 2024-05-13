@@ -5,6 +5,9 @@
 
     export let us;
     export let data; // Ensure data is ready for future use
+    export let selectedYear;
+
+    console.log(selectedYear);
 
     let svgElement;
     let tooltipElement; // Change this to match Svelte binding
@@ -143,9 +146,10 @@
 
         svg.selectAll("*").remove(); // Clear previous SVG contents
 
-        const color = d3.scaleQuantize([0, 15], d3.schemeBlues[9]);
+        const color = d3.scaleQuantize([1, 13], d3.schemeBlues[6]);
         const path = d3.geoPath();
-        const valuemap = new Map(data.map(d => [d.id, d['2020']]));
+        const yearKey = selectedYear.toString(); // Make sure selectedYear is a string to use as a key
+        const valuemap = new Map(data.map(d => [d.id, d[yearKey]]));
 
         const counties = topojson.feature(us, us.objects.counties);
         const states = topojson.feature(us, us.objects.states);
@@ -160,7 +164,7 @@
         // Draw legend
         svg.append("g")
             .attr("transform", "translate(610,20)")
-            .append(() => Legend(color, {title: "Estimated Population", width: 260}));
+            .append(() => Legend(color, {title: "Scaled Estimated Population", width: 260}));
 
         // Draw counties
         svg.append("g")
@@ -183,7 +187,7 @@
                     tooltip.style("visibility", "hidden");
                 })
             .append("title")
-                .text(d => `${d.properties.name}, ${d.properties.name}\n${valuemap.get(d.id)}`);
+                .text(d => `${d.properties.name}, ${statemap.get(d.id.slice(0, 2)).properties.name}\n${valuemap.get(d.id)}`);
 
         // Draw state borders
         svg.append("path")
@@ -195,7 +199,7 @@
     }
 
     onMount(createChart);
-    $: us, data, createChart(); // Reactive update if 'us' or 'data' changes
+    $: us, data, selectedYear, createChart(); // Reactive update if 'us' or 'data' changes
 </script>
 
 <svg bind:this={svgElement}></svg>

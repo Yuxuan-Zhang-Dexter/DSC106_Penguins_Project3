@@ -30,7 +30,18 @@
             console.error('Error loading the population data:', err);
             error = err;
         }
-    });    
+    });
+    function incrementYear() {
+        if (selectedYear < 2023) {
+            selectedYear += 1;
+        }
+    }
+
+    function decrementYear() {
+        if (selectedYear > 2020) {
+        selectedYear -= 1;
+        }
+    }
 
 </script>
 
@@ -39,9 +50,11 @@
         <p class="error">Error loading data. Please try again later.</p>  
         <!-- // Display an error message if there's an error. -->
     {:else if us && data}
+        <!-- Slider for selecting the year -->
         <input type="range" min="2020" max="2023" bind:value={selectedYear} />
         <span>{selectedYear}</span>
-        <Graph {us}{data}/>  
+        <!-- Pass selectedYear to the Graph component -->
+        <Graph {us} {data} {selectedYear}/>
         <!-- // Render the Graph component if data is loaded successfully. -->
     {:else}
         <p class="loading">Loading...</p>  

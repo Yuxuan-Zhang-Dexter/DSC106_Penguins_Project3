@@ -1,6 +1,6 @@
 <script>
     import { base } from '$app/paths';
-    import App from '/todomvc/components/App.svelte';
+    import App from '/todomvc/src/components/App.svelte';
   </script>
   
   

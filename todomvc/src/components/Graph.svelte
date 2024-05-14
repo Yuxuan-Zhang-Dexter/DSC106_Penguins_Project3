@@ -176,8 +176,7 @@
             .on('zoom', (event) => svg.selectAll('path').attr('transform', event.transform));
         svg.call(zoom);
 
-        // Variables to track the current zoom state and the currently zoomed county
-        console.log(selectedCountyId)
+        // Variables to track the current zoom state and the currently zoomed count
          // Handle zoom in and zoom out
         if (selectedCountyId) {
             const county = counties.features.find(d => d.id === selectedCountyId);
@@ -210,7 +209,7 @@
             .selectAll("path")
             .data(counties.features)
             .join("path")
-                .attr("fill", d => color(valuemap.get(d.id)))
+                .attr("fill", d => d.id === selectedCountyId ? 'green': color(valuemap.get(d.id)))
                 .attr("d", path)
                 .on('mouseover', (event, d) => {
                     tooltip

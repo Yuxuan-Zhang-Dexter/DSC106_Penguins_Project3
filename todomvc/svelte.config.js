@@ -6,11 +6,12 @@ const config = {
 		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
 		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
-		adapter: adapter(),
-		paths: {
-            base: process.env.NODE_ENV === 'production' ? '/DSC106_Penguins_Project3' : '',
-        }
+		adapter: adapter({
+			fallback: '404.html'
+		})
 	}
 };
+
+config.paths = { base: process.argv.includes('dev') ? '' : "/DSC106_Penguins_Project3"}
 
 export default config;

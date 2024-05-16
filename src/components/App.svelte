@@ -56,6 +56,7 @@
 
 
 <main>
+    <h1>Estimated Population Visualization in the United States from 2020 to 2023</h1>
     {#if error}
         <p class="error">Error loading data. Please try again later.</p>  
     {:else if us && data}
